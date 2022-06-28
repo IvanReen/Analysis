@@ -53,10 +53,7 @@ class BeiDaSpider:
         body = BeautifulSoup(res.read())
         table = body.find('table',cellspacing="0",cellpadding="0",id="nav2_7Tabcontent_10")
         a_list = table.find_all('a')
-        href_list = []
-        for a in a_list:
-            href_list.append(self.root_href + a.get('href'))
-        return href_list
+        return [self.root_href + a.get('href') for a in a_list]
 
     # 解析每个新闻，获取数据
     def parse_oneNew(self,url):
@@ -85,25 +82,16 @@ class BeiDaSpider:
     def start(self):
         for i in range(1,21):
             if i==1:
-                href_list = self.parse_onePage_href(self.root_href + "node_185.htm")
-                for href in href_list:
-                    try:
-                        self.parse_oneNew(href)
-                    except Exception as e:
-                        print(e)
-                    finally:
-                        pass
-            #        time.sleep(1)
-                    # break
+                href_list = self.parse_onePage_href(f"{self.root_href}node_185.htm")
             else:
-                href_list = self.parse_onePage_href(self.root_href + "node_185_" + str(i) + ".htm")
-                for href in href_list:
-                    try:
-                        self.parse_oneNew(href)
-                    except Exception as e:
-                        print(e)
-                    finally:
-                        pass
+                href_list = self.parse_onePage_href(f"{self.root_href}node_185_{str(i)}.htm")
+            for href in href_list:
+                try:
+                    self.parse_oneNew(href)
+                except Exception as e:
+                    print(e)
+                finally:
+                    pass
             #        time.sleep(1)
             #time.sleep(2)
             # break
